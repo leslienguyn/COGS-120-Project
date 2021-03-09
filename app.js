@@ -22,6 +22,7 @@ var create = require('./routes/create');
 var subtasks = require('./routes/subtasks');
 var settings = require('./routes/settings');
 var support = require('./routes/support');
+var facebook = require('./routes/facebook');
 // Example route
 // var user = require('./routes/user');
 
@@ -61,6 +62,7 @@ app.get('/create', create.view);
 app.get('/subtasks', subtasks.view);
 app.get('/settings', settings.view);
 app.get('/support', support.view);
+app.get('/facebook', facebook.view);
 // Example route
 // app.get('/users', user.list);
 
