@@ -2,7 +2,7 @@
 /**
  * Module dependencies.
  */
-
+const Datastore = require('nedb');
 var express = require('express');
 var http = require('http');
 var path = require('path');
@@ -35,7 +35,7 @@ app.engine('handlebars', handlebars());
 app.set('view engine', 'handlebars');
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.json());
+app.use(express.json({limit: '1mb'})); //Protecting the server from being flooded by data
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('IxD secret key'));
@@ -63,6 +63,50 @@ app.get('/subtasks', subtasks.view);
 app.get('/settings', settings.view);
 app.get('/support', support.view);
 app.get('/facebook', facebook.view);
+
+//Projects Database
+const database = new Datastore('public/data/database.db')
+database.loadDatabase();
+
+app.get('/api', (request, response) => {
+	database.find({}, (err, data) => {
+		if (err) {
+			response.end();
+			return;
+		}
+		response.json(data);
+	})
+});
+
+app.post('/api', (request, response) => {
+	console.log('I got a request!');
+	console.log(request.body);
+	database.insert(request.body);
+	response.json(data);
+});
+
+//Users Database
+const users = new Datastore('public/data/users.db')
+users.loadDatabase();
+
+app.post('/users', (request, response) => {
+	console.log('I got a request!');
+	console.log(request.body);
+	users.insert(request.body);
+	response.end();
+});
+
+//Requests Database
+const requests = new Datastore('public/data/requests.db')
+requests.loadDatabase();
+
+app.post('/requests', (request, response) => {
+	console.log('I got a request!');
+	console.log(request.body);
+	requests.insert(request.body);
+	response.end();
+});
+
 // Example route
 // app.get('/users', user.list);
 
